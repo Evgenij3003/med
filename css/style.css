@@ -9586,7 +9586,7 @@ select._error ~ .select__item .select__title {
 }
 
 .select__options {
-    max-height: 12.5rem;
+    height: 12.5rem;
     padding: 0px 1rem 0px 0px;
     overflow-y: auto;
 }
