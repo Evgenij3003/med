@@ -2287,7 +2287,7 @@ window.onload = function () {
 
 /*==========================================================================================================================================================================*/
 /* Полифилы */
-(function () {
+function polyfil() {
     if (!Element.prototype.closest) {
         Element.prototype.closest = function (css) {
             var node = this;
@@ -2298,14 +2298,13 @@ window.onload = function () {
             return null;
         };
     }
-})();
 
 
-(function () {
     if (!Element.prototype.matches) {
         Element.prototype.matches = Element.prototype.matchesSelector ||
             Element.prototype.webkitMatchesSelector ||
             Element.prototype.mozMatchesSelector ||
             Element.prototype.msMatchesSelector;
     }
-})();
+};
+polyfil();
