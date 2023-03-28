@@ -768,9 +768,9 @@ window.onload = function () {
 
     /*==========================================================================================================================================================================*/
     /* Select */
-    let selects = document.getElementsByTagName("select");
+    let selects = document.querySelectorAll("select");
     let timeout = 150;
-    if (selects.length > 0) {
+    if (selects) {
         selects_init(selects);
     }
 
@@ -941,27 +941,27 @@ window.onload = function () {
     }
 
 
-//     function selects_update_all() {
-//         let selects = document.querySelectorAll("select");
-//         if (selects) {
-//             for (let index = 0; index < selects.length; index++) {
-//                 const select = selects[index];
-//                 select_item(select);
-//             }
-//         }
-//     }
+    function selects_update_all() {
+        let selects = document.querySelectorAll("select");
+        if (selects) {
+            for (let index = 0; index < selects.length; index++) {
+                const select = selects[index];
+                select_item(select);
+            }
+        }
+    }
 
 
-//     let selectsForms = document.querySelectorAll(".select-application");
-//     selectsForms.forEach(select => {
-//         select.querySelector(".select__value span").style.opacity = 0;
-//         select.addEventListener("click", function(e) {
-//             if (e.target.classList.contains("select__option")) {
-//                 select.querySelector("select").classList.add("_valid");
-//                 select.querySelector(".select-application__label").style.opacity = 0
-//             }
-//         });
-//     });
+    let selectsForms = document.querySelectorAll(".select-application");
+    selectsForms.forEach(select => {
+        select.querySelector(".select__value span").style.opacity = 0;
+        select.addEventListener("click", function(e) {
+            if (e.target.classList.contains("select__option")) {
+                select.querySelector("select").classList.add("_valid");
+                select.querySelector(".select-application__label").style.opacity = 0
+            }
+        });
+    });
 
 
 
