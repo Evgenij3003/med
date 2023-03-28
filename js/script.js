@@ -1468,17 +1468,11 @@ window.onload = function () {
             }
         }
 
-
-
-        /*==================================================================================================================================================================*/
-        // Запуск конструктора Select */
-        // Select №1. Стандартный select:
-        if (document.querySelector(".select_day")) {
-            let select = document.querySelector(".select_day");
-            new Select(select, {
-                // disabled: true,
-                // submit: true,
-            });
+	
+        // Передача в конструктор коллекции селектов:
+        if (document.querySelector("select")) {
+            let selects = document.querySelectorAll("select");
+       	    new Select(selects, {});
         }
 
 
