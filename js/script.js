@@ -766,204 +766,720 @@ window.onload = function () {
 
 
 
-    /*==========================================================================================================================================================================*/
-    /* Select */
-    let selects = document.getElementsByTagName("select");
-    let timeout = 150;
-    if (selects.length > 0) {
-        selects_init(selects);
-    }
-
-
-    function selects_init(selects) {
-        for (let index = 0; index < selects.length; index++) {
-            const select = selects[index];
-            select_init(select);
-        }
-        document.addEventListener("click", function (e) {
-            selects_close(e);
-        });
-        document.addEventListener("keydown", function (e) {
-            if (e.which == 27) {
-                selects_close(e);
-            }
-        });
-    }
-
-
-    function selects_close(e) {
-        const selects = document.querySelectorAll(".select");
-        if (!e.target.closest(".select")) {
-            for (let index = 0; index < selects.length; index++) {
-                const select = selects[index];
-                const select_body_options = select.querySelector(".select__body");
-                select.classList.remove("_active");
-                _slideUp(select_body_options, timeout);
-            }
-        }
-    }
-
-
-    function select_init(select) {
-        const select_parent = select.parentElement;
-        const select_modifikator = select.getAttribute("class");
-        const select_selected_option = select.querySelector("option:checked");
-        select.setAttribute("data-default", select_selected_option.value);
-        select.style.display = "none";
-        select_parent.insertAdjacentHTML('beforeend', '<div class="select select_' + select_modifikator + '"></div>');
-        let new_select = select.parentElement.querySelector(".select");
-        new_select.appendChild(select);
-        select_item(select);
-    }
-
-
-    function select_item(select) {
-        const select_parent = select.parentElement;
-        const select_items = select_parent.querySelector(".select__item");
-        const select_options = select.querySelectorAll("option");
-        const select_selected_option = select.querySelector("option:checked");
-        const select_selected_text = select_selected_option.text;
-        const select_type = select.getAttribute("data-type");
-        if (select_items) {
-            select_items.remove();
-        }
-        let select_type_content = '';
-        if (select_type == 'input') {
-            select_type_content = '<div class="select__value"><input autocomplete="off" type="text" name="form[]" value="' + select_selected_text + '" data-value="' + select_selected_text + '" class="select__input"></div>';
-        } else {
-            select_type_content = '<div class="select__value"><span>' + select_selected_text + '</span></div>';
-        }
-        selectGetOptions(select, select_parent, select_options, select_type_content);
-    }
-
-
-    function select_actions(original, select) {
-        const select_item = select.querySelector(".select__item");
-        const select_body_options = select.querySelector(".select__body");
-        const select_options = select.querySelectorAll(".select__option");
-        const select_type = original.getAttribute("data-type");
-        const select_input = select.querySelector(".select__input");
-        select_item.addEventListener("click", function () {
-            let selects = document.querySelectorAll(".select");
-            for (let index = 0; index < selects.length; index++) {
-                const select = selects[index];
-                const select_body_options = select.querySelector(".select__body");
-                if (select != select_item.closest(".select")) {
-                    select.classList.remove("_active");
-                    _slideUp(select_body_options, timeout);
+        /*=========================================================================*/
+        /* Класс Select */
+        class Select {
+            constructor(props, options) {
+                this.selectClasses = {
+                    classSelect: "select",                                                  // Главный блок.
+                    classSelectCustom: "select__elem",                                      // Кастомный select.
+                    classSelectTitle: "select__title",                                      // Заголовок.
+                    classSelectValues: "select__values",                                    // Блок выбранных значений.
+                    classSelectValue: "select__value",                                      // Значение в заголовке.
+                    classSelectTag: "select__tag",                                          // Класс тега.
+                    classSelectCloseButton: "select__close-button",                         // Кнопка удаления тега в заголовке.
+                    classSelectQuantity: "select__quantity",                                // Элемент вывода количества выбранных option.                                
+                    classSelectText: "select__text",                                        // Текст заголовка или option при data-asset в option.
+                    classSelectInput: "select__input",                                      // Поле ввода в заголовке.
+                    classSelectLabel: "select__label",                                      // Лейбл.
+                    classSelectBody: "select__body",                                        // Тело select.
+                    classSelectOptions: "select__options",                                  // Выпадающий список.
+                    classSelectOption: "select__option",                                    // Пункт.
+                    classSelectOptionCheckbox: "select__checkbox",                          // Класс checkbox в option.
+                    classSelectLink: "select__link",                                        // Ссылка в элементе.
+                    classSelectRow: "select__row",                                          // Родитель колонок в заголовке (для ).
+                    classSelectData: "select__asset",                                       // Дополнительные данные.
+                    classSelectDisabled: "select-disabled",                                 // Select отключен.
+                    classSelectOpen: "select-open",                                         // Список select открыт.
+                    classSelectActive: "select-active",                                     // Список select выбран.
+                    classSelectFocus: "select-focus",                                       // Список select в фокусе.
+                    classSelectOptionSelected: "selected",                                  // Выбранный option.
                 }
-            }
-            _slideToggle(select_body_options, timeout);
-            select.classList.toggle("_active");
-        });
-        for (let index = 0; index < select_options.length; index++) {
-            const select_option = select_options[index];
-            const select_option_value = select_option.getAttribute("data-value");
-            const select_option_text = select_option.innerHTML;
-            if (select_type == "input") {
-                select_input.addEventListener("keyup", select_search);
-            } else {
-                if (select_option.getAttribute("data-value") == original.value) {
-                    select_option.style.display = "none";
+
+                // Options:
+                this.startOptions = {
+                    logging: true,                                                          // Вывод информационных сообщений в консоль.
+                    disabled: false,                                                        // Select отключен.
+                    startOpen: false,                                                       // Select изначально открыт.
+                    closeAllSelect: true,                                                   // Закрывать все открытые select по "клику" на любую область страницы. 
+                    speed: 400,                                                             // Скорость открытия/закрытия select.
+                    scroll: "",                                                             // Ограничение списка options (".select__options") по высоте (любое значение).
+                    multiple: false,                                                        // Мультивыбор.
+                    tagCloseButton: false,                                                  // Кнопка удаления тега в заголовке.
+                    deleteTagOnClick: false,                                                // Удаление тега по "клику" на него.
+                    separatorTags: "",                                                      // Разделитель тегов.
+                    selectLabel: false,                                                     // Вставка лейбла в select.
+                    selectLabelText: "",                                                    // Текст лейбла.
+                    hideSelectLabel: false,                                                 // Скрывать лейбл в заголовке при выборе option.
+                    quantity: false,                                                        // Вывод количества выбранных option в select.
+                    quantityOutput: "title",                                                // Элемент вывода количества выбранных option. Имеет 2 варианта:
+                                                                                            //      1. "title" - заголовок select;
+                                                                                            //      2. "body" - тело select.
+                    search: false,                                                          // Функционал поиска в поле ввода заголовка.
+                    validate: true,                                                         // Валидация select.
+                    submit: false,                                                          // Запрос на сервер по выбору option.
                 }
-            }
-            select_option.addEventListener("click", function (e) {
-                const targetElement = e.target;
-                const selectOptions = Array.from(select_option.closest(".select__options").querySelectorAll(".select__option"));
-                for (let index = 0; index < select_options.length; index++) {
-                    const el = select_options[index];
-                    el.style.display = "block";
-                }
-                if (select_option.closest(".select-form__item_service")) {
-                    if (select_option.classList.contains("service-item_home")) {
-                        popupClose(select_option.closest("._popup-doctor"));
-                        const applicationBlock = document.querySelector(".application");
-                        window.scrollTo({
-                            top: applicationBlock.getBoundingClientRect().top + window.scrollY,
-                            behavior: "smooth",
-                        });
-                    }
-                    const optionPrice = select_option.getAttribute("data-price");
-                    if (document.querySelector("._popup-doctor._open")) {
-                        let popupDoctor = document.querySelector("._popup-doctor");
-                        popupDoctor.querySelector(".info-popup__price span").innerHTML = optionPrice;
-                    }
-                }
-                if (document.querySelector("._page-catalog-doctors") && select_option.closest(".select-form__item_date")) {
-                    let currentPopup = select_option.closest("._popup-doctor");
-                    let indexDate = selectOptions.indexOf(targetElement);
-                    let times = select_option.closest("._page-catalog-doctors").querySelectorAll(".times-appointment__day")[indexDate].children;
-                    const selectTime = createSelect("time");
-                    let selectTimesFilled = fillSelect(selectTime, times);
-                    let selectBlockTime = document.querySelector(".select_time");
-                    selectBlockTime.remove();
-                    currentPopup.querySelector(".select-form__item_time").insertAdjacentElement("beforeend", selectTimesFilled);
-                    const selectPopupTime = currentPopup.querySelector(".time");
-                    select_init(selectPopupTime);
-                }
-                if (select_type == "input") {
-                    select_input.value = select_option_text;
-                    original.value = select_option_value;
+                options ? this.selectOptions = {...this.startOptions, ...options} : this.selectOptions = this.startOptions;
+
+                // Проверка props на NodeList:
+                if (props instanceof NodeList) {
+                    props.forEach(select => { 
+                        this.selectInit(select);
+                    });
                 } else {
-                    if (select_option.getAttribute("title")) {
-                        const optionTitle = select_option.getAttribute("title");
-                        select.querySelector(".select__value").innerHTML = "<span>" + select_option_text + "</span>";
-                        select.querySelector(".select__value").setAttribute("title", optionTitle);
-                    } else {
-                        select.querySelector(".select__value").innerHTML = "<span>" + select_option_text + "</span>";
-                    }
-                    original.value = select_option_value;
-                    select_option.style.display = "none";
+                    this.selectInit(props);
                 }
+            }
+
+
+            /*=========================================================================*/
+            /* Функция инициализации select */
+            selectInit(hiddenSelect) {
+                const selectBlock = hiddenSelect.parentElement;
+                selectBlock.classList.add(this.selectClasses.classSelect);
+                selectBlock.appendChild(hiddenSelect);
+                hiddenSelect.hidden = true;                                                             // Скрытие стандартного select.
+
+                // Если включена опция "мультивыбор":
+                if (this.selectOptions.multiple) {
+                    hiddenSelect.setAttribute("multiple", "");
+                }   
+
+                // Запускаем функцию-конструктор псевдоселекта:
+                this.selectBuild(hiddenSelect, selectBlock); 
+            }
+
+
+            /*=========================================================================*/
+            /* Конструктор псевдоселекта */
+            selectBuild(hiddenSelect, selectBlock) {
+                selectBlock.insertAdjacentHTML("beforeend", `
+                    <div class="${this.selectClasses.classSelectCustom}"></div>
+                `);
+                const select = selectBlock.querySelector(`.${this.selectClasses.classSelectCustom}`); 
+                this.getSelectTitleValue(hiddenSelect, select);                                          
+                this.selectOptions.hideSelectLabel ? select.querySelector(`.${this.selectClasses.classSelectValue}`).style.display = "none" : null;   
+                this.getOptions(hiddenSelect, select);                                                 
+                this.selectOptions.disabled ? this.selectDisabled(hiddenSelect, select) : null;
+                this.selectOptions.startOpen ? this.selectAction(hiddenSelect, select) : null;
+                (hiddenSelect.hasAttribute("data-quantity") && this.selectOptions.quantity) ? this.selectContentOutput(hiddenSelect, select) : null;
+                hiddenSelect.hasAttribute("data-tags") ? this.selectContentOutput(hiddenSelect, select) : null;
+                this.selectEvents(hiddenSelect, select);
+            }
+
+
+            /*=========================================================================*/
+            /* Конструктор заголовка select */
+            getSelectTitleValue(hiddenSelect, select, quantity = 1) {
+                const selectTitleBlock = select.querySelector(`.${this.selectClasses.classSelectTitle}`);
+
+                // Удаление разметки заголовка при повторном вызове данной функции (выбор option):
+                if (selectTitleBlock) {
+                    selectTitleBlock.remove();
+                }
+
+                // Получаем выбранные значения option в массив:
+                let selectTitle = this.getSelectedOptionsData(hiddenSelect);                            
+                let selectValues;
+
+                // Обработка выбранных значений при включенной опции "мультивыбор":
+                if (this.selectOptions.multiple) {
+                    if (this.selectOptions.tagCloseButton) {
+                        // Добавление в разметку тега кнопки удаления:
+                        const iconCloseHTML = `
+                            <span class="${this.selectClasses.classSelectCloseButton}">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="17" viewBox="0 0 17 17" width="17">
+                                    <path class="tag-close-icon" d="M8.5 0a8.5 8.5 0 110 17 8.5 8.5 0 010-17zm3.364 5.005a.7.7 0 00-.99 0l-2.44 2.44-2.439-2.44-.087-.074a.7.7 0 00-.903 1.064l2.44 2.439-2.44 2.44-.074.087a.7.7 0 001.064.903l2.439-2.441 2.44 2.441.087.074a.7.7 0 00.903-1.064l-2.441-2.44 2.441-2.439.074-.087a.7.7 0 00-.074-.903z" fill="currentColor" fill-rule="evenodd"></path>
+                                </svg>
+                            </span>
+                        `;
+                        selectValues = selectTitle.filter(option => option.value != "all").filter(option => option.selected).map(option => `
+                            <span role="button" data-value="${option.value}" class="${this.selectClasses.classSelectValue} ${this.selectClasses.classSelectTag}">
+                                ${iconCloseHTML}${option.textContent.trim()}
+                            </span>
+                        `).join(`${this.selectOptions.separatorTags}`);
+                    } else {
+                        selectValues = selectTitle.filter(option => option.value != "all").filter(option => option.selected).map(option => `
+                            <span role="button" data-value="${option.value}" class="${this.selectClasses.classSelectValue} ${this.selectClasses.classSelectTag}">
+                                ${option.textContent.trim()}
+                            </span>
+                        `).join(`${this.selectOptions.separatorTags}`);
+                    }
+                }
+
+                // Если заголовок не пустой, родителю select добавляем класс "active":
+                selectTitle.textContent
+                    ? select.parentElement.classList.add(this.selectClasses.classSelectActive) 
+                    : select.parentElement.classList.remove(this.selectClasses.classSelectActive);
+
+                // Построение разметки заголовка:
+                // Если включена опция "search":
+                if (this.selectOptions.search) {                                                 
+                    select.insertAdjacentHTML("afterbegin", `
+                        <div class="${this.selectClasses.classSelectTitle}">
+                            <div class="${this.selectClasses.classSelectValue}">
+                                <input autocomplete="off" type="text" placeholder="${selectTitle.textContent}" data-placeholder="${selectTitle.textContent}" 
+                                    class="${this.selectClasses.classSelectInput}">
+                            </div>
+                        </div>
+                    `);
+
+                // Если опция "search" отключена:
+                } else {
+                    let titleValue;
+                    if (this.selectOptions.multiple) {
+                        titleValue = `<div class="${this.selectClasses.classSelectValues}">${selectValues}</div>`; 
+                    } else if (selectTitle.dataset.asset) {
+                        titleValue = `
+                            <span class="${this.selectClasses.classSelectRow}">
+                                    <span class="${this.selectClasses.classSelectData}">
+                                        <img src="${selectTitle.dataset.asset}" alt="${selectTitle.dataset.value}"> 
+                                    </span>
+                                    <span class="${this.selectClasses.classSelectText}">${selectTitle.textContent}</span>
+                            </span>
+                        `;
+                    } else {
+                        titleValue = `<div class="${this.selectClasses.classSelectValue}">${selectTitle.textContent.trim()}</div>`;
+                    }
+                    const selectLabelText = this.selectOptions.selectLabel ? this.selectOptions.selectLabelText : "";
+                    const selectLabelClass = this.selectOptions.selectLabel ? `${this.selectClasses.classSelectLabel}` : "";
+                    const selectQuantity = this.selectOptions.quantity && this.selectOptions.quantityOutput === "title" 
+                        ? `<span class="${this.selectClasses.classSelectQuantity}">(${quantity}) :</span>`
+                        : "";
+                    const selectLabel = this.selectOptions.selectLabel ? `<div class="${selectLabelClass}">${selectLabelText} ${selectQuantity}</div>` :  "";
+                    select.insertAdjacentHTML("afterbegin", `
+                        <button type="button" class="${this.selectClasses.classSelectTitle}">${selectLabel}${titleValue}</button>
+                    `);
+                }
+            }                                                                                        
+
+
+            /*=========================================================================*/
+            /* Получение элементов option для вывода в заголовок */
+            getSelectedOptionsData(hiddenSelect) {
+                // Если включена опция "мультивыбор":
+                if (this.selectOptions.multiple) {                                                         
+                    let selectedOptions = Array.from(hiddenSelect.options);
+                    return selectedOptions;
+                // Если опция "мультивыбор" отключена:
+                } else {
+                    let selectedOption = hiddenSelect.options[hiddenSelect.selectedIndex];       
+                    return selectedOption;               
+                }
+            }
+
+
+            /*=========================================================================*/
+            /* Конструктор элементов options */
+            getOptions(hiddenSelect, select, quantity = 1) {
+                let selectOptions = Array.from(hiddenSelect.options);
+
+                if (selectOptions.length > 0) {
+                    let selectOptionsContent = ``;
+                    let quantityHTML = ``;
+
+                    // Формируем блок элементов options:
+                    selectOptions.forEach(option => {
+                        selectOptionsContent += this.getOption(hiddenSelect, option);
+                    });
+             
+                    // Если включена опция вывода количества в блок ".select__body":
+                    if (this.selectOptions.quantityOutput === "body") {
+                        const pseudoAttribute = this.selectOptions.selectLabelText ? this.selectOptions.selectLabelText : "Выбрано";
+                        const pseudoAttributeClass = `${this.selectClasses.classSelectLabel}`;
+                        quantityHTML = `
+                            <div class="${pseudoAttributeClass}">
+                                ${pseudoAttribute}
+                                <span class="${this.selectClasses.classSelectQuantity}">(${quantity}) :</span>
+                            </div>
+                        `;
+                    }
+
+                    // Формируем разметку блока ".select__body":
+                    let selectBody = `
+                        <div class="${this.selectClasses.classSelectBody}" hidden>
+                            ${quantityHTML}
+                            <div class="${this.selectClasses.classSelectOptions}">
+                                ${selectOptionsContent}
+                            </div>
+                        </div>
+                    `;
+                    select.insertAdjacentHTML("beforeend", selectBody);
+
+                    // Если имеется опция "scroll":
+                    if (this.selectOptions.scroll) {
+                        const scrollValue = this.selectOptions.scroll;
+                        select.querySelector(`.${this.selectClasses.classSelectOptions}`).style.maxHeight = parseInt(scrollValue.match(/\d+/)) + scrollValue.match(/\D+/)[0];
+                        select.querySelector(`.${this.selectClasses.classSelectOptions}`).style.overflowY = "auto";
+                    }
+                }
+            }
+
+
+            /*=========================================================================*/
+            /* Конструктор конкретного элемента option */
+            getOption(hiddenSelect, option) {
+                const optionSelected = option.selected                                                      // Если option выбран.
+                    ? ` ${this.selectClasses.classSelectOptionSelected}` : "";
+                const optionHide = option.selected && !this.selectOptions.multiple                          // Если options выбраны и отключен режим мультивыбор.
+                    ? `hidden` : "";                                        
+                const optionClass = option.dataset.class ? ` ${option.dataset.class}` : "";                 // Если option имеет свой класс.
+                const optionCheckbox = option.hasAttribute("data-checkbox") ? true : "";                    // Если option имеет атрибут data-checkbox.
+                const optionAsset = option.hasAttribute("data-asset") ? option.dataset.asset : "";          // Если option имеет атрибут data-asset.
+                const optionSelectedCheckbox = option.selected ? ` _active` : "";
+                const optionLink = option.dataset.href ? option.dataset.href : false;                       // Если option имеет атрибут data-href.
+                const optionLinkTarget = option.hasAttribute("data-href-blank") ? `target="_blank"` : "";   // Если option имеет атрибут data-href-blank.
+                let optionHTML = ``;
+
+                // Если option имеет атрибут data-href:
+                if (optionLink) {
+                    optionHTML = `
+                        <a href="${optionLink}" ${optionLinkTarget} data-value="${option.value}" 
+                            class="${this.selectClasses.classSelectOption} ${this.selectClasses.classSelectLink}${optionClass}${optionSelected}" ${optionHide}>${option.textContent.trim()}</a>
+                    `;
+
+                // Если option имеет атрибут data-checkbox:
+                } else if (optionCheckbox) {
+                    optionHTML = `
+                        <button type="button" data-checkbox data-value="${option.value}" class="${this.selectClasses.classSelectOption}${optionClass}${optionSelected}" ${optionHide}>
+                            <div class="${this.selectClasses.classSelectOptionCheckbox} checkbox${optionSelectedCheckbox}">
+                                <input id="${option.value}" type="checkbox" name="${option.value}" class="checkbox__input">
+                                <label for="${option.value}" class="checkbox__text">
+                                    <span>${option.textContent.trim()}</span>
+                                </label>
+                            </div>
+                        </button>
+                    `;
+
+                // Если option имеет атрибут data-asset:
+                } else if (optionAsset) {
+                    optionHTML = `
+                        <button type="button" data-asset data-value="${option.value}" class="${this.selectClasses.classSelectOption}${optionClass}${optionSelected}" ${optionHide}>
+                            <div class="${this.selectClasses.classSelectRow}">
+                                <span class="${this.selectClasses.classSelectData}">
+                                    <img src="${optionAsset}" alt="${option.value}"> 
+                                </span>
+                                <span class="${this.selectClasses.classSelectText}">${option.textContent.trim()}</span>
+                            </div>
+                        </button>
+                    `;
+
+                // Стандартный option:
+                } else {
+                    optionHTML = `
+                        <button type="button" data-value="${option.value}" class="${this.selectClasses.classSelectOption}${optionClass}${optionSelected}" ${optionHide}>${option.textContent.trim()}</button>
+                    `;
+                }
+
+                // Если option имеет родителя optgroup и является первым дочерним элементом:
+                if (option.parentElement.tagName === "OPTGROUP" && (option === option.parentElement.children[0])) {
+                    const optionLabelHTML = `
+                        <label data-label="${option.parentElement.label}" class="${this.selectClasses.classSelectLabel}">${option.parentElement.label.trim()}:</label>
+                    `;
+                    optionHTML = optionLabelHTML + optionHTML;
+                }
+                return optionHTML;
+            }
+
+
+            /*=========================================================================*/
+            /* Обработчик вывода контента select во внешний блок */
+            selectContentOutput(hiddenSelect, select) {
+                // Если оригинальный select имеет атрибут вывода выбранных option:
+                if (hiddenSelect.hasAttribute("data-tags")) {
+                    const outputTagsBlock = hiddenSelect.getAttribute("data-tags");
+                    let selectedItems = Array.from(hiddenSelect.querySelectorAll("[selected]"));
+
+                    // Формирование контента блока вывода (для каждого select может быть разный):
+                    let outputContent = selectedItems.filter(option => option.value != "all").map(option => `
+                        <div class="output-tags__item output-tags">
+                            <div class="output-tags__country">${option.dataset.country}</div>
+                            <div class="output-tags__city">${option.innerHTML}</div>
+                        </div>
+                    `).join("");
+                    document.querySelector(`${outputTagsBlock}`).innerHTML = `${outputContent}`;
+                };
+
+                // Если оригинальный select имеет атрибут вывода количества:
+                if (hiddenSelect.hasAttribute("data-quantity")) {
+                    const outputQuantityBlock = hiddenSelect.getAttribute("data-quantity");
+                    document.querySelector(`${outputQuantityBlock}`).innerHTML = `${select.querySelectorAll(`.${this.selectClasses.classSelectOptionSelected}:not([data-value='all'])`).length 
+                        ? `(${select.querySelectorAll(`.${this.selectClasses.classSelectOptionSelected}:not([data-value='all'])`).length})`
+                        : "(0)"}`;
+                };
+            }
+
+
+            /*=========================================================================*/
+            /* Общий обработчик событий в select */
+            selectEvents(hiddenSelect, select) {
+                document.addEventListener("click", function (e) {
+                    // Если событие "клик" срабатывает не внутри блока ".select" и включена опция закрыть все select:
+                    (!e.target.closest(`.${this.selectClasses.classSelect}`) && this.selectOptions.closeAllSelect) 
+                        ? this.selectAction(hiddenSelect, select, false) : null;
+                }.bind(this));
+                select.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    this.selectsActions(e);
+                }.bind(this));
+                select.addEventListener("keydown", function (e) {
+                    this.selectsActions(e);
+                }.bind(this));
+                select.addEventListener("focusin", function (e) {
+                    this.selectsActions(e);
+                }.bind(this));
+                select.addEventListener("focusout", function (e) {
+                    this.selectsActions(e);
+                }.bind(this));
+
+                // Если включена опция "поиск":
+                if (this.selectOptions.search) {
+                    let selectInput = select.querySelector(`.${this.selectClasses.classSelectInput}`);
+                    let selectOptions = select.querySelectorAll(`.${this.selectClasses.classSelectOption}`);
+                    selectInput.addEventListener("input", function (e) {
+                        this.searchActions(hiddenSelect, select, selectInput, selectOptions);
+                    }.bind(this));              
+                }
+            }
+
+
+            /*=========================================================================*/
+            /* Обработчик событий в select */
+            selectsActions(e) {
+                const targetElement = e.target;
+                const targetType = e.type;
+                const select = targetElement.closest(`.${this.selectClasses.classSelectCustom}`);
+                const hiddenSelect = targetElement.closest(`.${this.selectClasses.classSelect}`).querySelector("select");
+
+                // Обработка события "клик":
+                if (targetType === "click" && !hiddenSelect.disabled) {
+
+                    // "Клик" на заголовок select:
+                    if (targetElement.closest(`.${this.selectClasses.classSelectTitle}`) && !targetElement.closest(`.${this.selectClasses.classSelectCloseButton}`)) {
+                        this.selectOptions.search ? this.searchAction(hiddenSelect, select, targetElement) : null;    // Если включена опция "поиск".
+                        this.selectAction(hiddenSelect, select); 
+                            
+                    // Удаление тега по "клику" на него:
+                    // } else if (targetElement.closest(`.${this.selectClasses.classSelectValues}`) && this.selectOptions.deleteTagOnClick) {
+                    //     this.closeTagAction(hiddenSelect, select, targetElement, false);
+
+                    // "Клик" на кнопку удаления тега в заголовке select:
+                    } else if (targetElement.closest(`.${this.selectClasses.classSelectCloseButton}`)) {
+                        this.closeTagAction(hiddenSelect, select, targetElement);
+                    
+                    // "Клик" на элемент option:
+                    } else if (targetElement.closest(`.${this.selectClasses.classSelectOption}`)) {         
+                        const option = targetElement.closest(`.${this.selectClasses.classSelectOption}`);
+                        this.optionAction(hiddenSelect, select, option);
+                        this.setPositionSelectBody(select);
+                        // Если имеется опция скрыть лейбл при выборе option ("hideSelectLabel"):
+                        this.selectOptions.hideSelectLabel ? select.querySelector(`.${this.selectClasses.classSelectLabel}`).style.display = "none" : null; 
+                    }
+
+                // Обработка событий "focusin" и "focusout":
+                } else if (targetType === "focusin" || targetType === "focusout") {
+                    if (targetElement.closest(`.${this.selectClasses.classSelect}`)) {
+                        targetType === "focusin" 
+                            ? select.parentElement.classList.add(this.selectClasses.classSelectFocus) 
+                            : select.parentElement.classList.remove(this.selectClasses.classSelectFocus);
+                        // Если событие "focusout" и включена опция "поиск":
+                        (targetType === "focusout" && this.selectOptions.search) ? this.searchAction(hiddenSelect, select, targetElement, true) : null;
+                    }
+
+                // Обработка нажатия клавиши клавиатуры:
+                } else if (targetType === "keydown" && e.code === "Escape") {
+                    this.selectAction(hiddenSelect, select);
+                }
+            }
+
+
+            /*=========================================================================*/
+            /* Обработчик открытия/закрытия select */
+            selectAction(hiddenSelect, select, clickOnSelect = true) {
+                // Если событие "клик" внутри select:
+                if (clickOnSelect) {
+                    // Открыть/закрыть блок с элементами options:
+                    const selectBody = select.querySelector(`.${this.selectClasses.classSelectBody}`);
+                    if (!selectBody.classList.contains("_slide")) {
+                        select.parentElement.classList.toggle(this.selectClasses.classSelectOpen);
+                        _slideToggle(selectBody, this.selectOptions.speed);
+                    }
+                    
+                // Если событие "клик" НЕ внутри select:
+                } else {
+                    const selectsActive = document.querySelectorAll(`.${this.selectClasses.classSelect}.${this.selectClasses.classSelectOpen}`);
+                    if (selectsActive.length) {
+                        this.closeAllOpenSelect(select, selectsActive);
+                    }
+                }
+
+                // Если родителю select указан атрибут "data-one-select":
+                if (hiddenSelect.closest("[data-one-select]")) {
+                    const selectsGroup = hiddenSelect.closest("[data-one-select]");
+                    const selectsActive = selectsGroup.querySelectorAll(`.${this.selectClasses.classSelect}.${this.selectClasses.classSelectOpen}`);
+                    if (selectsActive.length) {
+                        this.closeAllOpenSelect(select, selectsActive);
+                    }
+                }
+            }
+
+
+            /*=========================================================================*/
+            /* Обработчик закрытия всех переданных select */
+            closeAllOpenSelect(select, selectsActive) {
+                selectsActive.forEach(select => {
+                    let selectOptions = select.querySelector(`.${this.selectClasses.classSelectBody}`);
+                    if (!selectOptions.classList.contains("_slide")) {
+                        select.classList.remove(this.selectClasses.classSelectOpen);
+                        _slideUp(selectOptions, this.selectOptions.speed);
+                    }
+                });
+            }
+
+
+            /*=========================================================================*/
+            /* Обработчик события "клик" на кнопке удаления тега */
+            closeTagAction(hiddenSelect, select, targetElement, clickOnButton = true) {
+                let targetTag;
+                let targetTagValue;
+                if (clickOnButton) {
+                    targetTag = targetElement.closest(`.${this.selectClasses.classSelectTag}`); 
+                    targetTagValue = targetTag.textContent.trim();
+                    targetTag.remove();
+                } else {
+                    targetTagValue = targetElement.textContent.trim();
+                    targetElement.remove();
+                }
+                this.setPositionSelectBody(select);
+                this.changeSelectedItems(hiddenSelect, select, null, false, targetTagValue);
+            }
+
+
+            /*=========================================================================*/
+            /* Обработчик события "клик" на элементе option */
+            optionAction(hiddenSelect, select, option) {
+                // Если включена опция "мультивыбор":
+                if (this.selectOptions.multiple) { 
+
+                    // Если option имеет атрибут data-checkbox:
+                    if (option.hasAttribute("data-checkbox")) {
+                        const optionCheckbox = option.querySelector(".checkbox");
+                        if (option.dataset.value === "all") {
+                            const hiddenSelectOptions = hiddenSelect.querySelectorAll("option:not([data-value='all'])");
+                            let selectOptions = select.querySelectorAll(`.${this.selectClasses.classSelectOption}:not([data-value='all'])`);
+                            const selectOptionsCheckboxes = select.querySelectorAll(".checkbox");
+                            if (optionCheckbox.classList.contains("_active")) {
+                                hiddenSelectOptions.forEach(option => {
+                                    option.removeAttribute("selected");
+                                });
+                                selectOptions.forEach(option => {
+                                    option.classList.remove("selected");
+                                });
+                                selectOptionsCheckboxes.forEach(checkbox => {
+                                    checkbox.classList.remove("_active");
+                                });
+                            } else {
+                                hiddenSelectOptions.forEach(option => {
+                                    option.setAttribute("selected", "");
+                                });
+                                selectOptions.forEach(option => {
+                                    option.classList.add("selected");
+                                });
+                                selectOptionsCheckboxes.forEach(checkbox => {
+                                    checkbox.classList.add("_active");
+                                });
+                            }
+                        } else {
+                            optionCheckbox.classList.toggle("_active");
+                        }
+                    }
+                    this.changeSelectedItems(hiddenSelect, select, option);
+
+                    // Если включена опция "quantity":
+                    if (this.selectOptions.quantity) {
+                        const quantity = select.querySelectorAll(`.${this.selectClasses.classSelectOptionSelected}:not([data-value='all']`).length;
+                        // Если выбрана опция вывода количества в заголовок:
+                        this.selectOptions.quantityOutput === "title" ? this.getSelectTitleValue(hiddenSelect, select, quantity) : null; 
+                        // Если выбрана опция вывода количества в блок ".select__body":
+                        this.selectOptions.quantityOutput === "body" ? select.querySelector(`.${this.selectClasses.classSelectQuantity}`).innerHTML = `(${quantity}) :` : null; 
+                        // Если оригинальный select содержит атрибут "data-quantity":
+                        hiddenSelect.hasAttribute("data-quantity") ? this.selectContentOutput(hiddenSelect, select) : null;
+                    // Если опция "quantity" отключена:
+                    } else {
+                        this.getSelectTitleValue(hiddenSelect, select);
+                    }
+
+                // Если опция "мультивыбор" отключена:
+                } else { 
+                    // Если включена опция "поиск":
+                    if (this.selectOptions.search) {
+                        this.searchAction(hiddenSelect, select, option);
+                        this.changeSelectedItems(hiddenSelect, select, option);
+
+                    // Если опция "поиск" отключена:
+                    } else {         
+                        if (select.querySelector(`.${this.selectClasses.classSelectOption}[hidden]`)) {
+                            select.querySelector(`.${this.selectClasses.classSelectOption}[hidden]`).hidden = false;
+                        }        
+                        option.hidden = true;
+                        this.changeSelectedItems(hiddenSelect, select, option);
+                        this.getSelectTitleValue(hiddenSelect, select);                                     // Обновляем заголовок select.
+                    }
+                    this.selectAction(hiddenSelect, select);                                                // Открываем/закрываем select.
+                }
+                this.setSelectChange(hiddenSelect);                                                         // Вызываем обработчик изменения select.
+            }
+
+
+            /*=========================================================================*/
+            /* Обработчик добавления/удаления значения "selected" элементам option */
+            changeSelectedItems(hiddenSelect, select, option, clickOption = true, targetTagValue) {
+                // Если событие "клик" в option:
+                if (clickOption) {
+                    if (this.selectOptions.multiple) {
+                        option.classList.toggle(this.selectClasses.classSelectOptionSelected);
+                        hiddenSelect.querySelector(`option[value="${option.dataset.value}"]`).hasAttribute("selected") 
+                            ? hiddenSelect.querySelector(`option[value="${option.dataset.value}"]`).removeAttribute("selected")
+                            : hiddenSelect.querySelector(`option[value="${option.dataset.value}"]`).setAttribute("selected", "");
+                    } else {
+                        hiddenSelect.querySelector("[selected]").removeAttribute("selected");
+                        hiddenSelect.querySelector(`option[value="${option.dataset.value}"]`).setAttribute("selected", "");
+                        select.querySelector(`.${this.selectClasses.classSelectOptionSelected}`).classList.remove("selected");
+                        option.classList.add("selected");
+                        hiddenSelect.value = option.hasAttribute("data-value") ? option.dataset.value : option.textContent;
+                    }
+                    
+                // Если событие "клик" на кнопке удаления тега:
+                } else {
+                    const hiddenSelectSelectedItems = this.getSelectedOptionsData(hiddenSelect);
+                    const selectSelectedItems = select.querySelectorAll(`.${this.selectClasses.classSelectOptionSelected}`);
+                    hiddenSelectSelectedItems.forEach(hiddenSelectSelectedItem => {
+                            hiddenSelectSelectedItem.textContent === targetTagValue ? hiddenSelectSelectedItem.removeAttribute("selected") : null;
+                    });
+                    selectSelectedItems.forEach(selectSelectedItem => {
+                        selectSelectedItem.textContent === targetTagValue ? selectSelectedItem.classList.remove("selected") : null;
+                    });
+                }
+            }
+
+
+            /*=========================================================================*/
+            /* Расчет высоты заголовка select */
+            setPositionSelectBody(select) {
+                const selectTitleHeight = select.querySelector(`.${this.selectClasses.classSelectTitle}`).offsetHeight;
+                select.querySelector(`.${this.selectClasses.classSelectBody}`).style.top = (selectTitleHeight - 3) + "px";
+            }
+
+
+            /*=========================================================================*/
+            /* Обработчик отключенного select */
+            selectDisabled(hiddenSelect, select) {
+                if (this.selectOptions.disabled) {
+                    select.classList.add(this.selectClasses.classSelectDisabled);
+                    select.querySelector(`.${this.selectClasses.classSelectTitle}`).setAttribute("disabled", "");
+                } else {
+                    select.classList.remove(this.selectClasses.classSelectDisabled);
+                    select.querySelector(`.${this.selectClasses.classSelectTitle}`).removeAttribute("disabled");
+                }
+            }
+
+            
+            /*=========================================================================*/
+            /* Функция поиска по элементам option */
+            searchActions(hiddenSelect, select, selectInput, selectOptions) {
+                // Если список закрыт, открываем:
+                select.querySelector(`.${this.selectClasses.classSelectBody}`).hidden === true ? this.selectAction(hiddenSelect, select) : null;
+                selectOptions.forEach(option => {
+                    if (option.textContent.toUpperCase().indexOf(selectInput.value.toUpperCase()) >= 0) {
+                        option.hidden = false;
+                    } else {
+                        option.hidden = true;
+                    }
+                });
+                this.setSelectChange(hiddenSelect);
+            }
+
+
+            /*=========================================================================*/
+            /* Обработчик событий на элементе input поиска */
+            searchAction(hiddenSelect, select, targetElement, focusout = false) {
+                let selectInput = select.querySelector(`.${this.selectClasses.classSelectInput}`);
+                let selectOptions = select.querySelectorAll(`.${this.selectClasses.classSelectOption}`);
+
+                // Если "клик" на элементе input:
+                if (targetElement.tagName === "INPUT") {
+                    // При открытии select:
+                    if (selectInput.value === "") {
+                        selectOptions.forEach(option => {
+                            option.removeAttribute("hidden");
+                        })
+                    };
+
+                    // Если событие "потери фокуса" на input, проверяем введенное в нем значение на соответствие значениям в option и ставим "выбран" при совпадении:
+                    if (focusout) {
+                        
+                    }
+
+                // Если "клик" на элементе option:
+                } else if (targetElement.tagName === "BUTTON") {
+                    selectInput.value = "";
+                    selectInput.setAttribute("placeholder", `${targetElement.dataset.value}`);
+                    selectInput.dataset.placeholder = `${targetElement.dataset.value}`;
+                }
+            }
+
+
+            /*=========================================================================*/
+            /* Обработчик изменения в select */
+            setSelectChange(hiddenSelect) {
+                // Моментальная валидация селекта:
+                if (this.selectOptions.validate) {
+                    formValidate.validateInput(hiddenSelect);
+                }
+                // При изменении селекта отправляем форму:
+                if (this.selectOptions.submit && hiddenSelect.value) {
+                    let tempButton = document.createElement("button");
+                    tempButton.type = "submit";
+                    hiddenSelect.closest("form").append(tempButton);
+                    tempButton.click();
+                    tempButton.remove();
+                }
+                const selectBlock = hiddenSelect.parentElement;
+                // Вызов callback-функции после отправки формы:
+                this.selectCallback(hiddenSelect, selectBlock);
+            }
+
+
+            /*=========================================================================*/
+            /* Callback функция */
+            selectCallback(hiddenSelect, selectBlock) {
+                document.dispatchEvent(new CustomEvent("selectCallback", {
+                    detail: {
+                        select: hiddenSelect
+                    }
+                }));
+            }
+
+
+            /*=========================================================================*/
+            /* Вывод информационного сообщения */
+            setLogging(message) {
+                this.selectOptions.logging ? console.log(`[select]: ${message}`) : null;
+            }
+        }
+
+
+
+        /*==================================================================================================================================================================*/
+        // Запуск конструктора Select */
+        // Select №1. Стандартный select:
+        if (document.querySelector(".select_day")) {
+            let select = document.querySelector(".select_day");
+            new Select(select, {
+                // disabled: true,
+                // submit: true,
             });
         }
-    }
-
-
-    function selectGetOptions(select, selectParent, selectOptions, selectTypeContent) {
-        if (selectOptions) {
-            let selectOptionsContent = document.createElement("div");
-            selectOptionsContent.setAttribute("class", "select__options");
-            selectParent.insertAdjacentHTML("beforeend", 
-            `
-                <div class="select__item">
-                    <div class="select__title">${selectTypeContent}</div>
-                    <div class="select__body"></div>
-                </div>
-            `);
-            selectParent.querySelector(".select__body").appendChild(selectOptionsContent);
-            for (let index = 0; index < selectOptions.length; index++) {
-                const selectOption = selectOptions[index];
-                const selectOptionClone = selectOption.cloneNode(true);
-                selectOptionClone.classList.add("select__option");
-                selectOptionsContent.insertAdjacentElement("beforeend", selectOptionClone);
-            }
-            select_actions(select, selectParent);
-        }
-    }
-
-
-    function selects_update_all() {
-        let selects = document.querySelectorAll("select");
-        if (selects) {
-            for (let index = 0; index < selects.length; index++) {
-                const select = selects[index];
-                select_item(select);
-            }
-        }
-    }
-
-
-    let selectsForms = document.querySelectorAll(".select-application");
-    selectsForms.forEach(select => {
-        select.querySelector(".select__value span").style.opacity = 0;
-        select.addEventListener("click", function(e) {
-            if (e.target.classList.contains("select__option")) {
-                select.querySelector("select").classList.add("_valid");
-                select.querySelector(".select-application__label").style.opacity = 0
-            }
-        });
-    });
 
 
 
