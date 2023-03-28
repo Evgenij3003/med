@@ -9608,8 +9608,8 @@ select._error ~ .select__item .select__title {
 
 .select__option {
     position: relative;
-    display: box !important;
-
+    display: box;
+    display: -webkit-box;
     width: 100%;
     text-align: left;
     cursor: pointer;
