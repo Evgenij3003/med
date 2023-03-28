@@ -925,12 +925,10 @@ window.onload = function () {
             let selectOptionsContent = document.createElement("div");
             selectOptionsContent.setAttribute("class", "select__options");
             selectParent.insertAdjacentHTML("beforeend", 
-            `
-                <div class="select__item">
+            `<div class="select__item">
                     <div class="select__title">${selectTypeContent}</div>
                     <div class="select__body"></div>
-                </div>
-            `);
+                </div>`);
             selectParent.querySelector(".select__body").appendChild(selectOptionsContent);
             for (let index = 0; index < selectOptions.length; index++) {
                 const selectOption = selectOptions[index];
@@ -943,27 +941,27 @@ window.onload = function () {
     }
 
 
-    function selects_update_all() {
-        let selects = document.querySelectorAll("select");
-        if (selects) {
-            for (let index = 0; index < selects.length; index++) {
-                const select = selects[index];
-                select_item(select);
-            }
-        }
-    }
+//     function selects_update_all() {
+//         let selects = document.querySelectorAll("select");
+//         if (selects) {
+//             for (let index = 0; index < selects.length; index++) {
+//                 const select = selects[index];
+//                 select_item(select);
+//             }
+//         }
+//     }
 
 
-    let selectsForms = document.querySelectorAll(".select-application");
-    selectsForms.forEach(select => {
-        select.querySelector(".select__value span").style.opacity = 0;
-        select.addEventListener("click", function(e) {
-            if (e.target.classList.contains("select__option")) {
-                select.querySelector("select").classList.add("_valid");
-                select.querySelector(".select-application__label").style.opacity = 0
-            }
-        });
-    });
+//     let selectsForms = document.querySelectorAll(".select-application");
+//     selectsForms.forEach(select => {
+//         select.querySelector(".select__value span").style.opacity = 0;
+//         select.addEventListener("click", function(e) {
+//             if (e.target.classList.contains("select__option")) {
+//                 select.querySelector("select").classList.add("_valid");
+//                 select.querySelector(".select-application__label").style.opacity = 0
+//             }
+//         });
+//     });
 
 
 
