@@ -8,15 +8,15 @@
     <link rel="stylesheet" href="css/datepicker.css">
     <!-- <link rel="stylesheet" href="css/style.min.css"> -->
     <meta name="format-detection" content="telephone=no">
-    <meta name="format-detection" content="address=no"/>
-    <meta name="google" content="notranslate"/>
+    <meta name="format-detection" content="address=no">
+    <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
 
 
-    <div class="wrapper _page-doctor">
+    <div class="wrapper">
 
 
 
@@ -240,7 +240,7 @@
                                                 </li>
                                                 <li class="submenu__item">
                                                     <a href="#" class="submenu__link">
-                                                        <span>Рентген 24/7/span>
+                                                        <span>Рентген 24/7</span>
                                                     </a>
                                                 </li>
                                                 <li class="submenu__item">
@@ -325,7 +325,7 @@
 
 
         <!-- Content -->
-        <main class="content page">
+        <main class="content page  _page-doctor">
             <div class="page-doctor__container">
 
   
@@ -360,7 +360,9 @@
                                         <img src="img/catalog-doctors/konnov.jpg" alt="Коннов Владислав Владиславович">
                                     </div>
                                     <div class="info-doctor__content">
-                                        <a href="#" class="info-doctor__name">Коннов Владислав Владиславович</a>
+                                        <div class="info-doctor__name">
+                                            <a href="#">Коннов Владислав Владиславович</a>
+                                        </div>
                                         <p class="info-doctor__text _profession">Врач - Уролог</p>
                                         <p class="info-doctor__text">Кандидат медицинских наук</p>
                                         <p class="info-doctor__text">Стаж: <span>25 лет</span></p>
@@ -640,10 +642,10 @@
                             <form action="#" class="form-application__body _form">
                                 <div class="form-application__items">
                                     <div class="form-application__item">
-                                        <input autocomplete="off" type="text" name="formName" placeholder="Ваше имя" class="form-application__input _input _req" />
+                                        <input autocomplete="off" type="text" name="formName" placeholder="Ваше имя" class="form-application__input _input _req">
                                     </div>
                                     <div class="form-application__item">
-                                        <input autocomplete="off" type="text" name="formAddress" placeholder="Адрес выезда" class="form-application__input _input _email _req" />
+                                        <input autocomplete="off" type="text" name="formAddress" placeholder="Адрес выезда" class="form-application__input _input _email _req">
                                     </div>
                                     <div class="form-application__item form-application__item_calendar">
                                         <input autocomplete="off" type="text" name="calendar-application" placeholder="Дата выезда" class="form-application__input _input _calendar _req">
@@ -666,7 +668,7 @@
                                         </div>
                                     </div>
                                     <div class="form-application__item">
-                                        <input autocomplete="off" type="text" name="formPhone" placeholder="Ваш телефон" class="form-application__input _input _tel _req" />
+                                        <input autocomplete="off" type="text" name="formPhone" placeholder="Ваш телефон" class="form-application__input _input _tel _req">
                                     </div>
                                     <div class="form-application__item select-application select-application_call">
                                         <div class="select-application__label">Когда с Вами связаться</div>
@@ -1087,7 +1089,7 @@
                     <div class="popup-content__title">Запись к врачу</div>
                     <div class="popup-content__info info-popup"></div>
                     <div class="popup-content__toggle toggle-doctors">
-                        <input id="doctor-popup-toggle" class="toggle-doctors__input" type="checkbox"/>
+                        <input id="doctor-popup-toggle" class="toggle-doctors__input" type="checkbox">
                         <label for="doctor-popup-toggle" class="toggle-doctors__label">Записаться анонимно</label>
                     </div>
                     <form action="#" class="popup-content__form form-popup _form">
@@ -1118,22 +1120,22 @@
                         <div data-anonim class="form-popup__item family-inputs">
                             <div data-anonim class="family-inputs__item">
                                 <div class="form-popup__label">Ваше ФИО</div>
-                                <input autocomplete="off" type="text" name="formPopupName" placeholder="Имя" class="form-popup__input _input _req-popup" />
+                                <input autocomplete="off" type="text" name="formPopupName" placeholder="Имя" class="form-popup__input _input _req-popup">
                             </div>
                             <div class="family-inputs__item">
-                                <input autocomplete="off" type="text" name="formPopupFamily" placeholder="Фамилия" class="form-popup__input _input _req-popup" />
+                                <input autocomplete="off" type="text" name="formPopupFamily" placeholder="Фамилия" class="form-popup__input _input _req-popup">
                             </div>
                             <div class="family-inputs__item">
-                                <input autocomplete="off" type="text" name="formPopupPatronymic" placeholder="Отчество" class="form-popup__input _input _req-popup" />
+                                <input autocomplete="off" type="text" name="formPopupPatronymic" placeholder="Отчество" class="form-popup__input _input _req-popup">
                             </div>
                         </div>
                         <div class="form-popup__item">
                             <div class="form-popup__label">Дата Вашего рождения</div>
-                            <input autocomplete="off" type="text" name="formPopupDateBirth" placeholder="ДД.ММ.ГГГГ" maxlength="10" class="form-popup__input _input _date _req-popup" />
+                            <input autocomplete="off" type="text" name="formPopupDateBirth" placeholder="ДД.ММ.ГГГГ" maxlength="10" class="form-popup__input _input _date _req-popup">
                         </div>
                         <div data-anonim class="form-popup__item">
                             <div class="form-popup__label">Ваш телефон</div>
-                            <input autocomplete="off" type="text" name="formPopupPhone" placeholder="8-(___)-___-__-__" class="form-popup__input _input _tel _req-popup" />
+                            <input autocomplete="off" type="text" name="formPopupPhone" placeholder="8-(___)-___-__-__" class="form-popup__input _input _tel _req-popup">
                             <p class="form-popup__text">Указанный номер будет использоваться для подтверждения записи на приём</p>
                         </div>
                         <div data-anonim class="form-popup__checkbox checkbox">
@@ -1164,7 +1166,7 @@
                     <div class="popup-content__title">Запись к врачу</div>
                     <div class="popup-content__info info-popup"></div>
                     <div class="popup-content__toggle toggle-doctors">
-                        <input id="service-popup-toggle" class="toggle-doctors__input" type="checkbox"/>
+                        <input id="service-popup-toggle" class="toggle-doctors__input" type="checkbox">
                         <label for="service-popup-toggle" class="toggle-doctors__label">Записаться анонимно</label>
                     </div>
                     <div class="popup-content__service service-popup"></div>
@@ -1184,22 +1186,22 @@
                         <div data-anonim class="form-popup__item family-inputs">
                             <div data-anonim class="family-inputs__item">
                                 <div class="form-popup__label">Ваше ФИО</div>
-                                <input autocomplete="off" type="text" name="formPopupName" placeholder="Имя" class="form-popup__input _input _req-popup" />
+                                <input autocomplete="off" type="text" name="formPopupName" placeholder="Имя" class="form-popup__input _input _req-popup">
                             </div>
                             <div class="family-inputs__item">
-                                <input autocomplete="off" type="text" name="formPopupFamily" placeholder="Фамилия" class="form-popup__input _input _req-popup" />
+                                <input autocomplete="off" type="text" name="formPopupFamily" placeholder="Фамилия" class="form-popup__input _input _req-popup">
                             </div>
                             <div class="family-inputs__item">
-                                <input autocomplete="off" type="text" name="formPopupPatronymic" placeholder="Отчество" class="form-popup__input _input _req-popup" />
+                                <input autocomplete="off" type="text" name="formPopupPatronymic" placeholder="Отчество" class="form-popup__input _input _req-popup">
                             </div>
                         </div>
                         <div class="form-popup__item">
                             <div class="form-popup__label">Дата Вашего рождения</div>
-                            <input autocomplete="off" type="text" name="formPopupDateBirth" maxlength="10" placeholder="ДД.ММ.ГГГГ" class="form-popup__input _input _date _req-popup" />
+                            <input autocomplete="off" type="text" name="formPopupDateBirth" maxlength="10" placeholder="ДД.ММ.ГГГГ" class="form-popup__input _input _date _req-popup">
                         </div>
                         <div data-anonim class="form-popup__item">
                             <div class="form-popup__label">Ваш телефон</div>
-                            <input autocomplete="off" type="text" name="formPopupPhone" placeholder="8-(___)-___-__-__" class="form-popup__input _input _tel _req-popup" />
+                            <input autocomplete="off" type="text" name="formPopupPhone" placeholder="8-(___)-___-__-__" class="form-popup__input _input _tel _req-popup">
                             <p class="form-popup__text">Указанный номер будет использоваться для подтверждения записи на приём</p>
                         </div>
                         <div data-anonim class="form-popup__checkbox checkbox">
@@ -1266,15 +1268,15 @@
                         </div>
                         <div class="form-popup__item">
                             <div class="form-popup__label">Ваше имя</div>
-                            <input autocomplete="off" type="text" name="formPopupName" placeholder="Имя" class="form-popup__input _input _req-popup" />
+                            <input autocomplete="off" type="text" name="formPopupName" placeholder="Имя" class="form-popup__input _input _req-popup">
                         </div>
                         <div class="form-popup__item form-popup__item_textarea">
                             <div class="form-popup__label">Комментарий о враче</div>
-                            <textarea autocomplete="off" type="text" name="formPopupMessage" class="form-popup__input _input _textarea _req-popup"></textarea>
+                            <textarea autocomplete="off" name="formPopupMessage" class="form-popup__input _input _textarea _req-popup"></textarea>
                         </div>
                         <div class="form-popup__item">
                             <div class="form-popup__label">Ваш email</div>
-                            <input autocomplete="off" type="text" name="formPopupMail" class="form-popup__input _input _email _req-popup" />
+                            <input autocomplete="off" type="text" name="formPopupMail" class="form-popup__input _input _email _req-popup">
                         </div>
                         <div class="form-popup__checkbox checkbox">
                             <input id="formPopupReviewSubscribe" checked type="checkbox" name="formPopupSubscribe" class="checkbox__input _req-popup">
