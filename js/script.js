@@ -384,10 +384,10 @@ window.onload = function () {
                                 el.closest("._popup-notification").querySelector(".popup-content__main").innerHTML = "";
                             }, 800);
                         }	
-                        if (el.closest("._page-catalog-doctors")) {
+                        if (el.closest(".wrapper").querySelector("._page-catalog-doctors")) {
                             setTimeout(() => {
-                                el.closest("._page-catalog-doctors").querySelector("._popup-doctor .select-form__item_date").innerHTML = "";
-                                el.closest("._page-catalog-doctors").querySelector("._popup-doctor .select-form__item_time").innerHTML = "";
+                                el.closest(".wrapper").querySelector("._popup-doctor .select-form__item_date").innerHTML = "";
+                                el.closest(".wrapper").querySelector("._popup-doctor .select-form__item_time").innerHTML = "";
                             }, 800);
                         }					
                         e.preventDefault();												
@@ -505,7 +505,7 @@ window.onload = function () {
             if (document.querySelector("._page-doctor")) {
                 const pageDoctor = document.querySelector("._page-doctor");
                 doctorImage = pageDoctor.querySelector(".info-doctor__image img").getAttribute("src");
-                doctorTitle = pageDoctor.querySelector(".info-doctor__name").innerHTML;
+                doctorTitle = pageDoctor.querySelector(".info-doctor__name a").innerHTML;
                 doctorProfession = pageDoctor.querySelector("._profession").innerHTML;
                 doctorPrice = pageDoctor.querySelector(".info-doctor__price-primary span").innerHTML;
                 const selectedDate = pageDoctor.querySelector(".time-appointment .select__value span").innerHTML;
@@ -606,7 +606,7 @@ window.onload = function () {
 
 
                 // Формирование селекта "Время приёма":
-                let times = popupLink.closest("._page-catalog-doctors").querySelectorAll(".times-appointment__day")[indexDate].children;
+                let times = popupLink.closest(".wrapper").querySelectorAll(".times-appointment__day")[indexDate].children;
                 const selectTime = createSelect("time");
                 let selectTimesFilled = fillSelect(selectTime, times);
                 currentPopup.querySelector(".select-form__item_time").insertAdjacentElement("beforeend", selectTimesFilled);
@@ -770,7 +770,7 @@ window.onload = function () {
     /* Select */
     let selects = document.querySelectorAll("select");
     let timeout = 150;
-    if (selects) {
+    if (selects.length > 0) {
         selects_init(selects);
     }
 
@@ -892,7 +892,7 @@ window.onload = function () {
                 if (document.querySelector("._page-catalog-doctors") && select_option.closest(".select-form__item_date")) {
                     let currentPopup = select_option.closest("._popup-doctor");
                     let indexDate = selectOptions.indexOf(targetElement);
-                    let times = select_option.closest("._page-catalog-doctors").querySelectorAll(".times-appointment__day")[indexDate].children;
+                    let times = select_option.closest(".wrapper").querySelectorAll(".times-appointment__day")[indexDate].children;
                     const selectTime = createSelect("time");
                     let selectTimesFilled = fillSelect(selectTime, times);
                     let selectBlockTime = document.querySelector(".select_time");
@@ -913,7 +913,6 @@ window.onload = function () {
                         select.querySelector(".select__value").innerHTML = "<span>" + select_option_text + "</span>";
                     }
                     original.value = select_option_value;
-                    select_option.style.display = "none";
                 }
             });
         }
@@ -925,14 +924,21 @@ window.onload = function () {
             let selectOptionsContent = document.createElement("div");
             selectOptionsContent.setAttribute("class", "select__options");
             selectParent.insertAdjacentHTML("beforeend", 
-            `<div class="select__item">
+            `
+                <div class="select__item">
                     <div class="select__title">${selectTypeContent}</div>
                     <div class="select__body"></div>
-                </div>`);
+                </div>
+            `);
             selectParent.querySelector(".select__body").appendChild(selectOptionsContent);
             for (let index = 0; index < selectOptions.length; index++) {
                 const selectOption = selectOptions[index];
-                const selectOptionClone = selectOption.cloneNode(true);
+                console.log(selectOption);
+                let selectOptionClone = document.createElement("div");
+                selectOptionClone.innerHTML = selectOption.innerHTML;
+                selectOption.hasAttribute("value") ? selectOptionClone.setAttribute("value", selectOption.getAttribute("value")) : null;
+                selectOption.hasAttribute("title") ? selectOptionClone.setAttribute("title", selectOption.getAttribute("title")) : null;
+                selectOption.dataset.price ? selectOptionClone.setAttribute("data-price", selectOption.dataset.price) : null;
                 selectOptionClone.classList.add("select__option");
                 selectOptionsContent.insertAdjacentElement("beforeend", selectOptionClone);
             }
@@ -958,7 +964,7 @@ window.onload = function () {
         select.addEventListener("click", function(e) {
             if (e.target.classList.contains("select__option")) {
                 select.querySelector("select").classList.add("_valid");
-                select.querySelector(".select-application__label").style.opacity = 0
+                select.querySelector(".select-application__label").style.opacity = 0;
             }
         });
     });
@@ -1428,192 +1434,6 @@ window.onload = function () {
                 }
             });
         };
-    }
-
-
-    // Отзывы:
-    if (document.querySelector(".review-item")) {
-        showMoreReviews();
-        
-        function showMoreReviews() {
-            let reviewsCatalog = document.querySelector(".items-reviews");
-            let visibleItems = 5;
-            const columnsReviews = document.querySelectorAll(".review-item");
-            for (let i = 0; i < columnsReviews.length; i++) {
-                const columnReview = columnsReviews[i];
-                i >= 5 ? columnReview.style.display = "none" : null; 
-            }
-            let showMoreButton = document.querySelector(".action-review__more");
-            showMoreButton.addEventListener("click", () => {
-                visibleItems += 5;
-                const columns = Array.from(reviewsCatalog.children);
-                const visibleColumns = columns.slice(0, visibleItems);                           
-                visibleColumns.forEach(column => column.style.display = "flex");
-                if ((visibleColumns.length === columnsReviews.length) || (visibleColumns.length > columnsReviews.length)) {                        
-                    showMoreButton.style.display = "none";
-                }
-            });
-        }
-    }
-
-
-    // Каталог врачей:
-    if (document.querySelector("._page-catalog-doctors")) {
-        showMoreDoctors();
-
-        function showMoreDoctors() {
-            let doctorsCatalog = document.querySelector(".catalog__doctors");
-            let visibleItems = 8;
-            const columnsDoctors = document.querySelectorAll(".doctor-catalog");
-            for (let i = 0; i < columnsDoctors.length; i++) {
-                const columnDoctor = columnsDoctors[i];
-                i >= 8 ? columnDoctor.style.display = "none" : null; 
-            }
-            let showMoreButton = document.querySelector(".doctors-catalog__more");
-            showMoreButton.addEventListener("click", () => {
-                visibleItems += 8;
-                const columns = Array.from(doctorsCatalog.children);
-                const visibleColumns = columns.slice(0, visibleItems);                           
-                visibleColumns.forEach(column => column.style.display = "block");
-                if ((visibleColumns.length === columnsDoctors.length) || (visibleColumns.length > columnsDoctors.length)) {                        
-                    showMoreButton.parentElement.style.display = "none";
-                }
-            });
-        };
-    }
-
-
-    // Карточки услуг на "странице исследования":
-    if (document.querySelector("._page-service")) {
-        // Комплексные услуги:
-        if (document.querySelector(".comprehensive-services__item")) {
-            let cards = document.querySelectorAll(".comprehensive-services__item");
-            let showMoreButton = document.querySelector(".comprehensive-services__more");
-            showMore(cards, showMoreButton, 3, 6);
-        }
-
-        // Популярные услуги:
-        if (document.querySelector(".popular-services__item")) {
-            let cards = document.querySelectorAll(".popular-services__item");
-            let showMoreButton = document.querySelector(".popular-services__more");
-            showMore(cards, showMoreButton, 3, 6);
-        }
-    }
-
-
-    // Категории услуг на странице "Каталог услуг":
-    if (document.querySelector("._page-catalog-services")) {
-        let cards = document.querySelectorAll(".category-service");
-        let showMoreButton = document.querySelector(".service-catalog__more");
-        showMore(cards, showMoreButton, 4, 4);
-    }
-
-
-    // Категории исследований на странице "Каталог исследований":
-    if (document.querySelector("._page-catalog-diagnostics")) {
-        let cards = document.querySelectorAll(".category-diagnostic");
-        let showMoreButton = document.querySelector(".diagnostics-catalog__more");
-        showMore(cards, showMoreButton, 4, 4);
-    }
-
-
-    // Акции на странице "Каталог акций":
-    if (document.querySelector("._page-promotions")) {
-        let cards = document.querySelectorAll(".item-promotion");
-        let showMoreButton = document.querySelector(".promotions__more");
-        showMore(cards, showMoreButton, 8, 8);
-    }
-
-
-    // Новости на странице "Каталог новостей":
-    if (document.querySelector("._page-catalog-news")) {
-        let cards = document.querySelectorAll(".item-news");
-        let showMoreButton = document.querySelector(".catalog-news__more");
-        showMore(cards, showMoreButton, 8, 8);
-    }
-
-
-    // Функция "показать еще":
-    function showMore(cards, showMoreButton, visibleCards, cardsOpen) {
-        for (let i = 0; i < cards.length; i++) {
-            const card = cards[i];
-            i >= visibleCards ? card.style.display = "none" : null; 
-        }
-        showMoreButton.addEventListener("click", () => {
-            visibleCards += cardsOpen;
-            const columns = Array.from(cards);
-            const visibleColumns = columns.slice(0, visibleCards);                           
-            if (showMoreButton.closest(".services-catalog") || showMoreButton.closest(".diagnostics-catalog")) {
-                visibleColumns.forEach(column => column.style.display = "grid");
-            } else if (showMoreButton.closest(".promotions")) {
-                visibleColumns.forEach(column => column.style.display = "flex");
-                showMoreButton.closest(".promotions").querySelector(".promotions__items").style.marginBottom = "0";
-            } else {
-                visibleColumns.forEach(column => column.style.display = "block");
-            } 
-            if ((visibleColumns.length === cards.length) || (visibleColumns.length > cards.length)) {  
-                if (showMoreButton.closest(".services-catalog") || showMoreButton.closest(".diagnostics-catalog") || showMoreButton.closest(".catalog-news")) {
-                    showMoreButton.parentElement.style.display = "none";
-                    if (showMoreButton.closest(".services-catalog")) {
-                        showMoreButton.closest(".services-catalog").classList.add("_open-all");
-                    }
-                } else {
-                    showMoreButton.style.display = "none";
-                    if (showMoreButton.classList.contains("comprehensive-services__more") || showMoreButton.classList.contains("popular-services__more")) {
-                        showMoreButton.parentElement.style.marginTop = "0";
-                    }
-                    if (showMoreButton.closest(".promotions")) {
-                        showMoreButton.closest(".promotions").querySelector(".promotions__items").style.marginBottom = "0";
-                    }
-                }
-            }
-        });
-    }
-
-
-    // Кнопки "показать еще" в категориях услуг на странице "Каталог услуг":
-    if (document.querySelector("._page-catalog-services")) {
-        let categoriesService = document.querySelectorAll(".category-service");
-        let visibleCards = 5;
-        categoriesService.forEach(categoryService => {
-            const buttonShowmore = categoryService.querySelector(".category-service__more");
-            const cardsService = categoryService.querySelector(".category-service__items").children;
-            for (let i = 0; i < cardsService.length; i++) {
-                const cardService = cardsService[i];
-                i >= visibleCards ? cardService.style.display = "none" : null; 
-            }
-            buttonShowmore.addEventListener("click", function(e) {
-                e.preventDefault();
-                const services = buttonShowmore.closest(".category-service").querySelectorAll(".item-research");
-                services.forEach(service => {
-                    service.style.display = "block";
-                });
-                buttonShowmore.style.display = "none";
-            });
-        });
-    }
-
-
-    // Кнопки "показать еще" в категориях исследований на странице "Каталог исследований":
-    if (document.querySelector("._page-catalog-diagnostics")) {
-        let categoriesDiagnostic = document.querySelectorAll(".category-diagnostic");
-        let visibleCards = 5;
-        categoriesDiagnostic.forEach(categoryDiagnostic => {
-            const buttonShowmore = categoryDiagnostic.querySelector(".category-diagnostic__more");
-            const cardsDiagnostic = categoryDiagnostic.querySelector(".category-diagnostic__items").children;
-            for (let i = 0; i < cardsDiagnostic.length; i++) {
-                const cardDiagnostic = cardsDiagnostic[i];
-                i >= visibleCards ? cardDiagnostic.style.display = "none" : null; 
-            }
-            buttonShowmore.addEventListener("click", function(e) {
-                e.preventDefault();
-                const diagnostics = buttonShowmore.closest(".category-diagnostic").querySelectorAll(".item-research");
-                diagnostics.forEach(diagnostic => {
-                    diagnostic.style.display = "block";
-                });
-                buttonShowmore.style.display = "none";
-            });
-        });
     }
 
 
