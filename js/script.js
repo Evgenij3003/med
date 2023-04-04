@@ -846,7 +846,6 @@ window.onload = function () {
             const select_body_options = activeSelect.querySelector(".select__body");
             activeSelect.classList.contains("_active") ? select_body_options.style.display = "none" : select_body_options.style.display = "block";
             activeSelect.classList.toggle("_active");
-            // _slideToggle(select_body_options, timeout);
         });
         for (let index = 0; index < select_options.length; index++) {
             const select_option = select_options[index];
