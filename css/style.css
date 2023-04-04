@@ -9606,7 +9606,7 @@ select._error ~ .select__item .select__title {
     background-color: #253861;
 }
 
-/* .select__option {
+.select__option {
     position: relative;
     display: box;
     display: -webkit-box;
@@ -9626,7 +9626,7 @@ select._error ~ .select__item .select__title {
     box-orient: vertical;
     -webkit-box-orient: vertical;
     overflow: hidden;
-} */
+}
 
 .select__option:not(:last-child) {
     margin: 0px 0px 0.75rem 0px;
