@@ -8423,6 +8423,7 @@ ul.info-promotion__list li::before {
     -o-transition: box-shadow 0.2s ease-in-out, transform 0.3s ease-in-out;
     transition: box-shadow 0.2s ease-in-out, transform 0.3s ease-in-out;
     transition: box-shadow 0.2s ease-in-out, transform 0.3s ease-in-out, -webkit-box-shadow 0.2s ease-in-out, -webkit-transform 0.3s ease-in-out;
+    z-index: 10;
 }
 
 .toggle-doctors__label::after,
