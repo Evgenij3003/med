@@ -9190,6 +9190,10 @@ ul.info-promotion__list li::before {
 
 /*===============================================================================   ELEMENTS   =============================================================================*/
 /* Select */
+.select {
+    position: relative;
+}
+
 ._popup .select {
     isolation: isolate;
     z-index: 1000;
