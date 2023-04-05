@@ -9301,21 +9301,6 @@ ul.info-promotion__list li::before {
     border-top: none;
 }
 
-._popup-doctor .select-form__item_service .select__body,
-._popup-service .select-form__item_service .select__body {
-    z-index: 5;
-}
-
-._popup-doctor .select-form__item_date .select__body,
-._popup-service .select-form__item_date .select__body {
-    z-index: 4;
-}
-
-._popup-doctor .select-form__item_time .select__body,
-._popup-service .select-form__item_time .select__body {
-    z-index: 3;
-}
-
 .select__options {
     max-height: 12.5rem;
     padding: 0px 1rem 0px 0px;
