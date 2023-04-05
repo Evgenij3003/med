@@ -8436,6 +8436,7 @@ ul.info-promotion__list li::before {
     -webkit-transition: background-color 0.3s ease-in-out 0.05s;
     -o-transition: background-color 0.3s ease-in-out 0.05s;
     transition: background-color 0.3s ease-in-out 0.05s;
+    z-index: -1;
 }
 
 .toggle-doctors__input:checked + .toggle-doctors__label::before,
