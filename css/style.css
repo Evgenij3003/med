@@ -9203,7 +9203,7 @@ ul.info-promotion__list li::before {
     top: 1.5rem;
     width: 0.5rem;
     height: 2px;
-    background-color: #999999;
+    background-color: #a3a3a3;
     transition: transform 0.3s ease;
     z-index: 10;
 }
