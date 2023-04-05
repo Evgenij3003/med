@@ -9205,7 +9205,7 @@ ul.info-promotion__list li::before {
     height: 2px;
     background-color: #a3a3a3;
     transition: transform 0.3s ease;
-    z-index: 10;
+    z-index: 1;
 }
 
 .select::before {
@@ -9226,10 +9226,6 @@ ul.info-promotion__list li::before {
     transform: rotate(45deg);
 }
 
-.select-application {
-    position: relative;
-}
-
 .select-application__label {
     position: absolute;
     top: 50%;
@@ -9241,6 +9237,7 @@ ul.info-promotion__list li::before {
     line-height: 1.6;
     color: #777777;
     pointer-events: none;
+    z-index: 10;
 }
 
 .select__title {
@@ -9306,6 +9303,7 @@ ul.info-promotion__list li::before {
     background-color: #fff;
     border: 1px solid rgba(153, 153, 153, 0.5);
     border-top: none;
+    z-index: 2;
 }
 
 .select__options {
