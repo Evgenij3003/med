@@ -8660,6 +8660,7 @@ ul.info-promotion__list li::before {
 ._popup .select-form__item,
 .form-popup__input,
 .service-popup__text {
+	    position: relative;
     -webkit-box-flex: 0;
         -ms-flex: 0 0 58.888%;
             flex: 0 0 58.888%;
@@ -8669,6 +8670,7 @@ ul.info-promotion__list li::before {
 .form-popup__item,
 .family-inputs__item,
 .service-popup__item {
+	position: relative;
     width: 100%;
     display: -webkit-box;
     display: -ms-flexbox;
