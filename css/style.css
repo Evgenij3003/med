@@ -31,108 +31,6 @@
 
 /*==========================================================================================================================================================================*/
 /* Обнуление */
-/* * {
-    margin: 0;
-    padding: 0;
-    -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-}
-
-*,
-*:before,
-*:after {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-html,
-body {
-    width: 100%;
-    font-size: 100%;
-    -ms-text-size-adjust: 100%;
-    -moz-text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-nav,
-footer,
-header,
-aside {
-    display: block;
-}
-
-input,
-button,
-textarea {
-    font-family: inherit;
-    outline: none;
-    border: none;
-}
-
-input,
-button,
-textarea {
-    font-family: "DINPro", sans-serif;
-    font-size: inherit;
-}
-
-input::-ms-clear {
-    display: none;
-}
-
-a,
-button {
-    color: inherit;
-    cursor: pointer;
-    border: none;
-}
-
-button {
-    background: none;
-}
-
-button::-moz-focus-inner {
-    padding: 0;
-    border: 0;
-}
-
-ul li {
-    list-style: none;
-}
-
-img {
-    vertical-align: top;
-    border: 0;
-    height: auto;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-size: inherit;
-    font-weight: inherit;
-}
-
-:focus,
-:active,
-a:focus,
-a:active {
-    outline: none;
-}
-
-a,
-a:visited,
-a:hover {
-    text-decoration: none;
-} */
-
-
-/* Обнуляющие Стили */
 * {
     padding: 0;
     margin: 0;
@@ -8490,7 +8388,6 @@ ul.info-promotion__list li::before {
     line-height: 1.14;
     color: #000000;
     cursor: pointer;
-    /* z-index: 5; */
 }
 
 .toggle-urgently__label {
@@ -8538,7 +8435,6 @@ ul.info-promotion__list li::before {
     -webkit-transition: background-color 0.3s ease-in-out 0.05s;
     -o-transition: background-color 0.3s ease-in-out 0.05s;
     transition: background-color 0.3s ease-in-out 0.05s;
-    /* z-index: -1; */
 }
 
 .toggle-doctors__input:checked + .toggle-doctors__label::before,
@@ -8565,16 +8461,7 @@ ul.info-promotion__list li::before {
 ._page-service .toggle-doctors__label {
     font-size: 0.875rem;
     color: #F26F21;
-    /* z-index: 2; */
 }
-
-/* ._page-service .toggle-doctors__label::before {
-    z-index: 2;
-}
-
-._page-service .toggle-doctors__label::after {
-    z-index: 1;
-} */
 
 ._popup .toggle-doctors,
 ._popup .toggle-diagnostic {
@@ -8632,6 +8519,7 @@ ul.info-promotion__list li::before {
     visibility: hidden;
     overflow-y: auto;
     overflow-x: hidden;
+    pointer-events: none;
     -webkit-transition: all 0.6s ease;
     -o-transition: all 0.6s ease;
     transition: all 0.6s ease;
@@ -8641,6 +8529,7 @@ ul.info-promotion__list li::before {
 ._popup._open {
     opacity: 1;
     visibility: visible;
+    pointer-events: all;
 }
 
 ._popup-body {
@@ -8877,21 +8766,6 @@ ul.info-promotion__list li::before {
     line-height: 1.5;
     color: #000000;
 }
-
-/* ._popup-doctor .select-form__item_service,
-._popup-service .select-form__item_service {
-    z-index: 5;
-}
-
-._popup-doctor .select-form__item_date,
-._popup-service .select-form__item_date {
-    z-index: 4;
-}
-
-._popup-doctor .select-form__item_time,
-._popup-service .select-form__item_time {
-    z-index: 3;
-} */
 
 
 /*=====================================================================================*/
@@ -9338,7 +9212,6 @@ ul.info-promotion__list li::before {
 .select {
     position: relative;
     isolation: isolate;
-    /* z-index: 5; */
 }
 
 .select::before {
@@ -9348,9 +9221,9 @@ ul.info-promotion__list li::before {
     top: 50%;
     width: 1rem;
     height: 1rem;
-    -webkit-transform: translateY(-50%);
-        -ms-transform: translateY(-50%);
-            transform: translateY(-50%);
+    -webkit-transform: translateY(-50%) rotateX(0deg);
+        -ms-transform: translateY(-50%) rotateX(0deg);
+            transform: translateY(-50%) rotateX(0deg);
     background-image: url("../img/icons/arrow-down.svg");
     background-size: cover;
     pointer-events: none;
@@ -9359,7 +9232,7 @@ ul.info-promotion__list li::before {
     -o-transition: transform 0.3s ease-in-out;
     transition: transform 0.3s ease-in-out;
     transition: transform 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
-    /* z-index: 5; */
+    z-index: 100;
 }
 
 .select-open::before {
@@ -9382,7 +9255,6 @@ ul.info-promotion__list li::before {
     line-height: 1.6;
     color: #777777;
     pointer-events: none;
-    /* z-index: 10; */
 }
 
 .select__title {
